@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+spec:
+  template:
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - your-app-label
+            topologyKey: topology.kubernetes.io/zone
