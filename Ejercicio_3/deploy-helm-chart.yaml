@@ -1,0 +1,33 @@
+name: Deploy Helm Chart to AKS
+
+on:
+  push:
+    branches:
+      - main  # Change this to your main branch name
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Helm
+      uses: Azure/setup-helm@v1
+      with:
+        kubeconfig: ${{ secrets.KUBECONFIG }}
+
+    - name: Install Helm Dependencies
+      run: |
+        helm dependency update ./chart
+
+    - name: Deploy Helm Chart
+      run: |
+        helm upgrade --install my-release ./chart \
+          --namespace my-namespace \
+          --set key1=value1,key2=value2  # Customize values as needed
+
+    - name: Clean Up
+      run: |
+        helm list -n my-namespace  # List releases for debugging purposes
